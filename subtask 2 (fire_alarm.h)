@@ -1,0 +1,18 @@
+//=====[#include guards - begin]===============================================
+
+#ifndef _FIRE_ALARM_H_
+#define _FIRE_ALARM_H_
+
+//=====[Declarations (prototypes) of public functions]=========================
+
+void fireAlarmInit();
+void fireAlarmUpdate();
+bool gasDetectorStateRead();
+bool overTemperatureDetectorStateRead();
+bool gasDetectedRead();
+bool overTemperatureDetectedRead();
+bool pirDetectedRead();               // NEW - PIR sensor state
+
+//=====[#include guards - end]=================================================
+
+#endif // _FIRE_ALARM_H_
