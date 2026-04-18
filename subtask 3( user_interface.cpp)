@@ -27,7 +27,6 @@
 DigitalOut incorrectCodeLed(LED3);
 DigitalOut systemBlockedLed(LED2);
 
-// Gate control buttons — interrupt driven
 InterruptIn gateOpenButton(PF_9);
 InterruptIn gateCloseButton(PF_8);
 
@@ -52,7 +51,6 @@ static void systemBlockedIndicatorUpdate();
 static void userInterfaceDisplayInit();
 static void userInterfaceDisplayUpdate();
 
-// Interrupt callback prototypes
 static void gateOpenButtonCallback();
 static void gateCloseButtonCallback();
 
@@ -63,12 +61,9 @@ void userInterfaceInit()
     incorrectCodeLed = OFF;
     systemBlockedLed = OFF;
 
-    // Configure gate buttons with pull-up resistors
-    // Pin is normally HIGH, goes LOW when button pressed
     gateOpenButton.mode(PullUp);
     gateCloseButton.mode(PullUp);
 
-    // Trigger callback on falling edge (HIGH to LOW = button pressed)
     gateOpenButton.fall(&gateOpenButtonCallback);
     gateCloseButton.fall(&gateCloseButtonCallback);
 
@@ -192,6 +187,7 @@ static void userInterfaceDisplayInit()
     displayCharPositionWrite( 0,2 );
     displayStringWrite( "Alarm:" );
 
+    // NEW - Row 3 now shows gate status instead of ALL GOOD
     displayCharPositionWrite( 0,3 );
     displayStringWrite( "Gate: Closed        " );
 }
@@ -229,8 +225,8 @@ static void userInterfaceDisplayUpdate()
             displayStringWrite( "OFF" );
         }
 
-        // Row 3: show gate status when alarm OFF
-        //        show code entry prompt when alarm ON
+        // NEW - Row 3: show gate status when alarm OFF
+        //              show code entry prompt when alarm ON
         displayCharPositionWrite( 0,3 );
         if( !sirenStateRead() ) {
             switch( gateStatusRead() ) {
@@ -255,12 +251,12 @@ static void userInterfaceDisplayUpdate()
         accumulatedDisplayTime += SYSTEM_TIME_INCREMENT_MS;
     }
 
-    // 1-minute periodic refresh
+    // NEW - 1 minute periodic refresh also shows gate status
     if( accumulatedAlarmTime >= ALARM_STATUS_REFRESH_TIME_MS ) {
 
         accumulatedAlarmTime = 0;
 
-        displayCharPositionWrite( 0, 3 );
+        displayCharPositionWrite( 0,3 );
         if( !sirenStateRead() ) {
             switch( gateStatusRead() ) {
                 case GATE_CLOSED:
@@ -295,7 +291,6 @@ static void systemBlockedIndicatorUpdate()
     systemBlockedLed = systemBlockedState;
 }
 
-// Interrupt callbacks — kept very short, just call gate functions
 static void gateOpenButtonCallback()
 {
     gateOpen();
