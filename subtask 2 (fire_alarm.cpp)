@@ -24,7 +24,7 @@
 //=====[Declaration and initialization of public global objects]===============
 
 DigitalIn alarmTestButton(BUTTON1);
-DigitalIn pirSensor(PD_11);        // PIR sensor — HIGH when motion detected
+DigitalIn pirSensor(PD_11);        // NEW - PIR sensor pin
 
 //=====[Declaration and initialization of private global variables]============
 
@@ -32,7 +32,7 @@ static bool gasDetected                  = OFF;
 static bool overTemperatureDetected      = OFF;
 static bool gasDetectorState             = OFF;
 static bool overTemperatureDetectorState = OFF;
-static bool pirDetected                  = OFF;  // tracks if PIR has triggered
+static bool pirDetected                  = OFF;  // NEW - PIR detection flag
 
 //=====[Declarations (prototypes) of private functions]========================
 
@@ -51,7 +51,7 @@ void fireAlarmInit()
     strobeLightInit();
 
     alarmTestButton.mode(PullDown);
-    pirSensor.mode(PullDown);      // PIR output is LOW when no motion
+    pirSensor.mode(PullDown);      // NEW - PIR output LOW when no motion
 }
 
 void fireAlarmUpdate()
@@ -82,6 +82,7 @@ bool overTemperatureDetectedRead()
     return overTemperatureDetected;
 }
 
+// NEW - Read PIR sensor state
 bool pirDetectedRead()
 {
     return pirDetected;
@@ -91,7 +92,6 @@ bool pirDetectedRead()
 
 static void fireAlarmActivationUpdate()
 {
-
     temperatureSensorUpdate();
     gasSensorUpdate();
 
@@ -112,7 +112,7 @@ static void fireAlarmActivationUpdate()
         strobeLightStateWrite(ON);
     }
 
-    // PIR sensor — HIGH means motion/intruder detected
+    // NEW - PIR sensor triggers alarm when motion detected
     if( pirSensor ) {
         pirDetected = ON;
         sirenStateWrite(ON);
@@ -125,7 +125,6 @@ static void fireAlarmActivationUpdate()
         sirenStateWrite(ON);
         strobeLightStateWrite(ON);
     }
-    
 }
 
 static void fireAlarmDeactivationUpdate()
@@ -144,7 +143,7 @@ static void fireAlarmDeactivate()
     strobeLightStateWrite(OFF);
     overTemperatureDetected = OFF;
     gasDetected             = OFF;
-    pirDetected             = OFF;   // reset PIR flag when alarm deactivated
+    pirDetected             = OFF;   // NEW - reset PIR flag on deactivation
 }
 
 static int fireAlarmStrobeTime()
