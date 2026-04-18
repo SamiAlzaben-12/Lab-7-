@@ -12,8 +12,8 @@
 #include "temperature_sensor.h"
 #include "gas_sensor.h"
 #include "event_log.h"
-#include "motor.h"
-#include "gate.h"
+#include "motor.h"          // NEW - motor module
+#include "gate.h"           // NEW - gate module
 
 //=====[Declaration of private data types]=====================================
 
@@ -57,8 +57,8 @@ static void commandShowCurrentTemperatureInFahrenheit();
 static void commandSetDateAndTime();
 static void commandShowDateAndTime();
 static void commandShowStoredEvents();
-static void commandShowCurrentMotorState();
-static void commandShowCurrentGateState();
+static void commandShowCurrentMotorState();  // NEW
+static void commandShowCurrentGateState();   // NEW
 
 //=====[Implementations of public functions]===================================
 
@@ -166,8 +166,8 @@ static void pcSerialComCommandUpdate( char receivedChar )
         case 's': case 'S': commandSetDateAndTime(); break;
         case 't': case 'T': commandShowDateAndTime(); break;
         case 'e': case 'E': commandShowStoredEvents(); break;
-        case 'm': case 'M': commandShowCurrentMotorState(); break;
-        case 'g': case 'G': commandShowCurrentGateState(); break;
+        case 'm': case 'M': commandShowCurrentMotorState(); break;  // NEW
+        case 'g': case 'G': commandShowCurrentGateState(); break;   // NEW
         default: availableCommands(); break;
     } 
 }
@@ -185,8 +185,8 @@ static void availableCommands()
     pcSerialComStringWrite( "Press 's' or 'S' to set the date and time\r\n" );
     pcSerialComStringWrite( "Press 't' or 'T' to get the date and time\r\n" );
     pcSerialComStringWrite( "Press 'e' or 'E' to get the stored events\r\n" );
-    pcSerialComStringWrite( "Press 'm' or 'M' to get the motor state\r\n" );
-    pcSerialComStringWrite( "Press 'g' or 'G' to get the gate state\r\n" );
+    pcSerialComStringWrite( "Press 'm' or 'M' to get the motor state\r\n" );  // NEW
+    pcSerialComStringWrite( "Press 'g' or 'G' to get the gate state\r\n" );   // NEW
     pcSerialComStringWrite( "\r\n" );
 }
 
@@ -312,6 +312,7 @@ static void commandShowStoredEvents()
     }
 }
 
+// NEW - Reports current motor direction via serial terminal
 static void commandShowCurrentMotorState()
 {
     switch( motorDirectionRead() ) {
@@ -327,6 +328,7 @@ static void commandShowCurrentMotorState()
     }
 }
 
+// NEW - Reports current gate status via serial terminal
 static void commandShowCurrentGateState()
 {
     switch( gateStatusRead() ) {
